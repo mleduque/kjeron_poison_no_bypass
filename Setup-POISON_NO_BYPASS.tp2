@@ -1,0 +1,119 @@
+BACKUP ~POISON_NO_BYPASS~ 
+AUTHOR ~none~ 
+VERSION ~1.0~
+	BEGIN	~No bypass for Poison Weapon: Mirror Image or Stoneskin~
+		SUBCOMPONENT	~No Bypass~
+		DEFINE_ACTION_FUNCTION	ADD_SPLPROT	INT_VAR	stat = 0	value = 0	relation = 0	RET	new_row		BEGIN
+			ACTION_IF	(stat > 278)	BEGIN	WARN	~SPLPROT.2DA - Stat out of Bounds.~	END
+			ACTION_IF	((stat != 259) AND (stat != 260) AND (relation > 11))	BEGIN	WARN	~SPLPROT.2DA - Relation out of Bounds.~	END
+			COPY_EXISTING ~SPLPROT.2DA~	~override~
+				COUNT_2DA_COLS	cols	COUNT_2DA_ROWS cols rows	TEXT_SPRINT check_row ~~	TEXT_SPRINT check_stat ~~	SET new_row = 0
+				FOR(current_row = 0; current_row < rows; ++current_row)	BEGIN	READ_2DA_ENTRY current_row 1 cols check_stat
+					PATCH_IF (~%check_stat%~ STRING_EQUAL ~%stat%~)	BEGIN	READ_2DA_ENTRY current_row 2 cols check_value
+						PATCH_IF (~%check_value%~ STRING_EQUAL ~%value%~)	BEGIN	READ_2DA_ENTRY current_row 3 cols check_relation
+							PATCH_IF (~%check_relation%~ STRING_EQUAL ~%relation%~)	BEGIN	new_row = current_row	current_row = rows	END
+						END
+					END
+				END
+				PATCH_IF (new_row = 0)	BEGIN
+					FOR(current_row = 0; current_row < rows; ++current_row)	BEGIN	READ_2DA_ENTRY current_row 1 cols check_stat
+						PATCH_IF (~%check_stat%~ STRING_EQUAL ~*~)	BEGIN	new_row = current_row	current_row = rows	END
+					END
+					PATCH_IF (new_row = 0)	BEGIN	new_row = rows	INSERT_2DA_ROW rows cols ~%new_row%		   %stat%		   %value%		   %relation%~
+					END	ELSE	BEGIN	SET_2DA_ENTRY new_row 1 cols ~%stat%~	SET_2DA_ENTRY new_row 2 cols ~%value%~	SET_2DA_ENTRY new_row 3 cols ~%relation%~	END
+				END
+			BUT_ONLY
+		END
+		LAF	ADD_SPLPROT	INT_VAR	stat = 273	value = 0x40000000	relation = 	7	RET	mirror = new_row	END
+		LAF	ADD_SPLPROT	INT_VAR	stat = 88	value = 0	relation = 	5	RET	stoneskin = new_row	END
+		LAF	ADD_SPLPROT	INT_VAR	stat = 199	value = 0	relation = 	5	RET	golemskin = new_row	END
+		LAF	ADD_SPLPROT	INT_VAR	stat = 259	value = stoneskin	relation = 	golemskin	RET	anyskin = new_row	END
+		LAF	ADD_SPLPROT	INT_VAR	stat = 259	value = mirror	relation = 	anyskin	RET	mirrorskin = new_row	END
+		ACTION_IF FILE_EXISTS_IN_GAME	~misc75.itm~	BEGIN	COPY_EXISTING	~misc75.itm~	override
+			LPF	ADD_ITEM_EFFECT	INT_VAR	insert_point = 0	type = 99	opcode = 318	target = 2	parameter2 = mirrorskin	STR_VAR	resource = ~misc75~	END
+		BUT_ONLY	END
+		ACTION_IF FILE_EXISTS_IN_GAME	~arow14.itm~	BEGIN	COPY_EXISTING	~arow14.itm~	override
+			LPF	ADD_ITEM_EFFECT	INT_VAR	insert_point = 0	type = 99	opcode = 318	target = 2	parameter2 = mirrorskin	STR_VAR	resource = ~arow14~	END
+		BUT_ONLY	END
+		ACTION_IF FILE_EXISTS_IN_GAME	~dagg16.itm~	BEGIN	COPY_EXISTING	~dagg16.itm~	override
+			LPF	ADD_ITEM_EFFECT	INT_VAR	insert_point = 0	type = 99	opcode = 318	target = 2	parameter2 = mirrorskin	STR_VAR	resource = ~dagg16~	END
+		BUT_ONLY	END
+		ACTION_IF FILE_EXISTS_IN_GAME	~bdpweapn.spl~	BEGIN	COPY_EXISTING	~bdpweapn.spl~	override
+			LPF	ADD_SPELL_EFFECT	INT_VAR	insert_point = 0	opcode = 318	target = 2	parameter2 = mirrorskin	STR_VAR	resource = ~BDPWEAPN~	END
+		BUT_ONLY	END
+	BEGIN	~No bypass for Poison Weapon: Mirror Image only~
+		SUBCOMPONENT	~No Bypass~
+		DEFINE_ACTION_FUNCTION	ADD_SPLPROT	INT_VAR	stat = 0	value = 0	relation = 0	RET	new_row		BEGIN
+			ACTION_IF	(stat > 278)	BEGIN	WARN	~SPLPROT.2DA - Stat out of Bounds.~	END
+			ACTION_IF	((stat != 259) AND (stat != 260) AND (relation > 11))	BEGIN	WARN	~SPLPROT.2DA - Relation out of Bounds.~	END
+			COPY_EXISTING ~SPLPROT.2DA~	~override~
+				COUNT_2DA_COLS	cols	COUNT_2DA_ROWS cols rows	TEXT_SPRINT check_row ~~	TEXT_SPRINT check_stat ~~	SET new_row = 0
+				FOR(current_row = 0; current_row < rows; ++current_row)	BEGIN	READ_2DA_ENTRY current_row 1 cols check_stat
+					PATCH_IF (~%check_stat%~ STRING_EQUAL ~%stat%~)	BEGIN	READ_2DA_ENTRY current_row 2 cols check_value
+						PATCH_IF (~%check_value%~ STRING_EQUAL ~%value%~)	BEGIN	READ_2DA_ENTRY current_row 3 cols check_relation
+							PATCH_IF (~%check_relation%~ STRING_EQUAL ~%relation%~)	BEGIN	new_row = current_row	current_row = rows	END
+						END
+					END
+				END
+				PATCH_IF (new_row = 0)	BEGIN
+					FOR(current_row = 0; current_row < rows; ++current_row)	BEGIN	READ_2DA_ENTRY current_row 1 cols check_stat
+						PATCH_IF (~%check_stat%~ STRING_EQUAL ~*~)	BEGIN	new_row = current_row	current_row = rows	END
+					END
+					PATCH_IF (new_row = 0)	BEGIN	new_row = rows	INSERT_2DA_ROW rows cols ~%new_row%		   %stat%		   %value%		   %relation%~
+					END	ELSE	BEGIN	SET_2DA_ENTRY new_row 1 cols ~%stat%~	SET_2DA_ENTRY new_row 2 cols ~%value%~	SET_2DA_ENTRY new_row 3 cols ~%relation%~	END
+				END
+			BUT_ONLY
+		END
+		LAF	ADD_SPLPROT	INT_VAR	stat = 273	value = 0x40000000	relation = 	7	RET	mirror = new_row	END
+		ACTION_IF FILE_EXISTS_IN_GAME	~misc75.itm~	BEGIN	COPY_EXISTING	~misc75.itm~	override
+			LPF	ADD_ITEM_EFFECT	INT_VAR	insert_point = 0	type = 99	opcode = 318	target = 2	parameter2 = mirror	STR_VAR	resource = ~misc75~	END
+		BUT_ONLY	END
+		ACTION_IF FILE_EXISTS_IN_GAME	~arow14.itm~	BEGIN	COPY_EXISTING	~arow14.itm~	override
+			LPF	ADD_ITEM_EFFECT	INT_VAR	insert_point = 0	type = 99	opcode = 318	target = 2	parameter2 = mirror	STR_VAR	resource = ~arow14~	END
+		BUT_ONLY	END
+		ACTION_IF FILE_EXISTS_IN_GAME	~dagg16.itm~	BEGIN	COPY_EXISTING	~dagg16.itm~	override
+			LPF	ADD_ITEM_EFFECT	INT_VAR	insert_point = 0	type = 99	opcode = 318	target = 2	parameter2 = mirror	STR_VAR	resource = ~dagg16~	END
+		BUT_ONLY	END
+		ACTION_IF FILE_EXISTS_IN_GAME	~bdpweapn.spl~	BEGIN	COPY_EXISTING	~bdpweapn.spl~	override
+			LPF	ADD_SPELL_EFFECT	INT_VAR	insert_point = 0	opcode = 318	target = 2	parameter2 = mirror	STR_VAR	resource = ~BDPWEAPN~	END
+		BUT_ONLY	END
+	BEGIN	~No bypass for Poison Weapon: Stoneskin only~
+		SUBCOMPONENT	~No Bypass~
+		DEFINE_ACTION_FUNCTION	ADD_SPLPROT	INT_VAR	stat = 0	value = 0	relation = 0	RET	new_row		BEGIN
+			ACTION_IF	(stat > 278)	BEGIN	WARN	~SPLPROT.2DA - Stat out of Bounds.~	END
+			ACTION_IF	((stat != 259) AND (stat != 260) AND (relation > 11))	BEGIN	WARN	~SPLPROT.2DA - Relation out of Bounds.~	END
+			COPY_EXISTING ~SPLPROT.2DA~	~override~
+				COUNT_2DA_COLS	cols	COUNT_2DA_ROWS cols rows	TEXT_SPRINT check_row ~~	TEXT_SPRINT check_stat ~~	SET new_row = 0
+				FOR(current_row = 0; current_row < rows; ++current_row)	BEGIN	READ_2DA_ENTRY current_row 1 cols check_stat
+					PATCH_IF (~%check_stat%~ STRING_EQUAL ~%stat%~)	BEGIN	READ_2DA_ENTRY current_row 2 cols check_value
+						PATCH_IF (~%check_value%~ STRING_EQUAL ~%value%~)	BEGIN	READ_2DA_ENTRY current_row 3 cols check_relation
+							PATCH_IF (~%check_relation%~ STRING_EQUAL ~%relation%~)	BEGIN	new_row = current_row	current_row = rows	END
+						END
+					END
+				END
+				PATCH_IF (new_row = 0)	BEGIN
+					FOR(current_row = 0; current_row < rows; ++current_row)	BEGIN	READ_2DA_ENTRY current_row 1 cols check_stat
+						PATCH_IF (~%check_stat%~ STRING_EQUAL ~*~)	BEGIN	new_row = current_row	current_row = rows	END
+					END
+					PATCH_IF (new_row = 0)	BEGIN	new_row = rows	INSERT_2DA_ROW rows cols ~%new_row%		   %stat%		   %value%		   %relation%~
+					END	ELSE	BEGIN	SET_2DA_ENTRY new_row 1 cols ~%stat%~	SET_2DA_ENTRY new_row 2 cols ~%value%~	SET_2DA_ENTRY new_row 3 cols ~%relation%~	END
+				END
+			BUT_ONLY
+		END
+		LAF	ADD_SPLPROT	INT_VAR	stat = 88	value = 0	relation = 	5	RET	stoneskin = new_row	END
+		LAF	ADD_SPLPROT	INT_VAR	stat = 199	value = 0	relation = 	5	RET	golemskin = new_row	END
+		LAF	ADD_SPLPROT	INT_VAR	stat = 259	value = stoneskin	relation = 	golemskin	RET	anyskin = new_row	END
+		ACTION_IF FILE_EXISTS_IN_GAME	~misc75.itm~	BEGIN	COPY_EXISTING	~misc75.itm~	override
+			LPF	ADD_ITEM_EFFECT	INT_VAR	insert_point = 0	type = 99	opcode = 318	target = 2	parameter2 = anyskin	STR_VAR	resource = ~misc75~	END
+		BUT_ONLY	END
+		ACTION_IF FILE_EXISTS_IN_GAME	~arow14.itm~	BEGIN	COPY_EXISTING	~arow14.itm~	override
+			LPF	ADD_ITEM_EFFECT	INT_VAR	insert_point = 0	type = 99	opcode = 318	target = 2	parameter2 = anyskin	STR_VAR	resource = ~arow14~	END
+		BUT_ONLY	END
+		ACTION_IF FILE_EXISTS_IN_GAME	~dagg16.itm~	BEGIN	COPY_EXISTING	~dagg16.itm~	override
+			LPF	ADD_ITEM_EFFECT	INT_VAR	insert_point = 0	type = 99	opcode = 318	target = 2	parameter2 = anyskin	STR_VAR	resource = ~dagg16~	END
+		BUT_ONLY	END
+		ACTION_IF FILE_EXISTS_IN_GAME	~bdpweapn.spl~	BEGIN	COPY_EXISTING	~bdpweapn.spl~	override
+			LPF	ADD_SPELL_EFFECT	INT_VAR	insert_point = 0	opcode = 318	target = 2	parameter2 = anyskin	STR_VAR	resource = ~BDPWEAPN~	END
+		BUT_ONLY	END
+CLEAR_ARRAYS
+		
